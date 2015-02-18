@@ -1,0 +1,18 @@
+<project>
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="out"/>
+        <mkdir dir="out/classes"/>
+        <javac srcdir="src/main/java" destdir="out/classes"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="target"/>
+        <jar destfile="target/bae.jar" basedir="out/classes" excludes="**/*.jar,**/MANIFEST.MF,**/BCKEY.*" />
+    </target>
+
+</project>
