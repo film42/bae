@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["film42@gmail.com"]
   spec.summary       = "Multinomial naive bayes classifier with a kick of java"
   spec.description   = "Multinomial naive bayes classifier with a kick of java"
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/film42/bae"
   spec.license       = "GPL version 3, or LGPL version 3 (Dual License)"
 
   spec.files         = `git ls-files -z`.split("\x0")
