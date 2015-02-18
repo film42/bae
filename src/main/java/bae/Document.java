@@ -33,7 +33,9 @@ public class Document {
 
             // Set initial count if it doesn't have one yet
             // Use zero because we'll add counts in the next line.
-            this.frequencyMap.putIfAbsent(wordToken, 0L);
+            if(!this.frequencyMap.containsKey(wordToken)) {
+                this.frequencyMap.put(wordToken, 0L);
+            }
 
             // Update count
             this.frequencyMap.put(wordToken, this.frequencyMap.get(wordToken) + 1);

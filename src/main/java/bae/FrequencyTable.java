@@ -14,7 +14,9 @@ public class FrequencyTable {
 
     public void insertOrIgnore(String label) {
         // Add new hash to frequency table if it's not already there
-        this.frequencyTable.putIfAbsent(label, new HashMap<String, Long>());
+        if(!this.frequencyTable.containsKey(label)) {
+            this.frequencyTable.put(label, new HashMap<String, Long>());
+        }
     }
 
     public void increaseFrequencyBy(String label, String word, long frequency) {
@@ -24,7 +26,9 @@ public class FrequencyTable {
         Map<String, Long> frequencyRow = this.frequencyTable.get(label);
 
         // Make sure we have a frequency for that position in the table
-        frequencyRow.putIfAbsent(word, 0L);
+        if(!frequencyRow.containsKey(word)) {
+            frequencyRow.put(word, 0L);
+        }
 
         // Update frequency
         frequencyRow.put(word, frequencyRow.get(word) + frequency);

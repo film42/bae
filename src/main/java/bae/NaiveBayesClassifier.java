@@ -74,7 +74,9 @@ public class NaiveBayesClassifier {
             }
 
             // Default class posterior of label to 1.0
-            classPosteriorOf.putIfAbsent(label, 1d);
+            if(!classPosteriorOf.containsKey(label)) {
+                classPosteriorOf.put(label, 1d);
+            }
 
             // Update class posterior
             double classPosterior = classPriorOf.get(label) * likelihoodOf.get(label);
@@ -93,12 +95,16 @@ public class NaiveBayesClassifier {
     }
 
     public void updateIntegerCountBy(Map<String, Long> someMap, String someKey, long count) {
-        someMap.putIfAbsent(someKey, 0L);
+        if(!someMap.containsKey(someKey)) {
+            someMap.put(someKey, 0L);
+        }
         someMap.put(someKey, someMap.get(someKey) + count);
     }
 
     public void updateDoubleCountBy(Map<String, Double> someMap, String someKey, double count) {
-        someMap.putIfAbsent(someKey, 0.0);
+        if(!someMap.containsKey(someKey)) {
+            someMap.put(someKey, 0.0);
+        }
         someMap.put(someKey, someMap.get(someKey) + count);
     }
 
