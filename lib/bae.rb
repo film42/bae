@@ -1,6 +1,6 @@
 require "bae/version"
 
-require "target/bae.jar"
+require ::File.join(::File.dirname(__FILE__), "..", "target" , "bae.jar")
 
 java_import "bae.Document"
 java_import "bae.FrequencyTable"
