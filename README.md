@@ -28,6 +28,9 @@ You can refer to ["naivebayes"](https://github.com/id774/naivebayes) gem for mor
 classifier = ::Bae::Classifier.new
 classifier.train("positive", {"aaa" => 0, "bbb" => 1})
 classifier.train("negative", {"ccc" => 2, "ddd" => 3})
+
+classifier.finish_training!
+
 classifier.classify({"aaa" => 1, "bbb" => 1})
 
 #=> {"positive" => 0.8767123287671234, "negative" => 0.12328767123287669}
@@ -39,6 +42,9 @@ classifier = ::Bae::Classifier.new
 classifier.train("positive", "aaa aaa bbb");
 classifier.train("negative", "ccc ccc ddd ddd");
 classifier.train("neutral", "eee eee eee fff fff fff");
+
+classifier.finish_training!
+
 classifier.classify("aaa bbb")
 
 #=> {"positive"=>0.8962655601659751, "negative"=>0.0663900414937759, "neutral"=>0.037344398340248955}

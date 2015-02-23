@@ -8,12 +8,16 @@ public class NaiveBayesClassifier {
     private FrequencyTable frequencyTable;
     private Map<String, Long> wordTable;
     private Map<String, Long> instanceCountOf;
+    private Map<String, Double> initialLikelihoodOf;
+    Map<String, Double> classPriorOf;
     private double totalCount = 0;
 
     public NaiveBayesClassifier() {
         this.frequencyTable = new FrequencyTable();
         this.wordTable = new HashMap<>();
         this.instanceCountOf = new HashMap<>();
+        this.initialLikelihoodOf = new HashMap<>();
+        this.classPriorOf = new HashMap<>();
     }
 
     public void train(String label, Document document) {
@@ -37,12 +41,23 @@ public class NaiveBayesClassifier {
         updateIntegerCountBy(this.instanceCountOf, label, 1);
     }
 
-    public Map<String, Double> classify(Document document) {
-        Map<String, Double> classPriorOf = new HashMap<>();
-        Map<String, Double> likelihoodOf = new HashMap<>();
-        Map<String, Double> classPosteriorOf = new HashMap<>();
-        Map<String, Long> frequencyMap = document.getFrequencyMap();
-        double evidence = 0;
+    public void calculateInitialLikelihoods() {
+        // Update likelihood counts
+        for(String label : this.frequencyTable.getLabels()) {
+            // Set initial likelihood
+            initialLikelihoodOf.put(label, 1d);
+
+            // Calculate likelihoods
+            for (String word : this.wordTable.keySet()) {
+                double laplaceWordLikelihood =
+                        (this.frequencyTable.get(label, word) + 1d) /
+                        (this.instanceCountOf.get(label) + this.wordTable.size());
+
+                // Update likelihood
+                double likelihood = initialLikelihoodOf.get(label);
+                initialLikelihoodOf.put(label, likelihood * (1d - laplaceWordLikelihood));
+            }
+        }
 
         // Update the prior
         for(Map.Entry<String, Long> entry : this.instanceCountOf.entrySet()) {
@@ -50,36 +65,39 @@ public class NaiveBayesClassifier {
             double frequency = entry.getValue();
 
             // Update instance count
-            classPriorOf.put(label, (frequency / this.totalCount));
+            this.classPriorOf.put(label, (frequency / this.totalCount));
         }
+    }
+
+    public Map<String, Double> classify(Document document) {
+        Map<String, Double> likelihoodOf = new HashMap<>();
+        Map<String, Double> classPosteriorOf = new HashMap<>();
+        Map<String, Long> featureFrequencyMap = document.getFrequencyMap();
+        double evidence = 0;
 
         // Update likelihood counts
         for(String label : this.frequencyTable.getLabels()) {
             // Set initial likelihood
-            likelihoodOf.put(label, 1d);
+            likelihoodOf.put(label, this.initialLikelihoodOf.get(label));
 
-            // Calculate likelihoods
-            for(String word : wordTable.keySet()) {
+            // Calculate actual likelihoods likelihoods
+            for(String word : featureFrequencyMap.keySet()) {
                 double laplaceWordLikelihood =
                         (this.frequencyTable.get(label, word) + 1d) /
                         (this.instanceCountOf.get(label) + this.wordTable.size());
 
-                // Update likelihood
+                // Update likelihood for words not in features
                 double likelihood = likelihoodOf.get(label);
-                if(frequencyMap.containsKey(word)) {
-                    likelihoodOf.put(label, likelihood * laplaceWordLikelihood);
-                } else {
-                    likelihoodOf.put(label, likelihood * (1d - laplaceWordLikelihood));
+                if(featureFrequencyMap.containsKey(word)) {
+                    likelihoodOf.put(label, (likelihood * laplaceWordLikelihood) / (1d - laplaceWordLikelihood));
                 }
             }
 
             // Default class posterior of label to 1.0
-            if(!classPosteriorOf.containsKey(label)) {
-                classPosteriorOf.put(label, 1d);
-            }
+            classPosteriorOf.put(label, 1d);
 
             // Update class posterior
-            double classPosterior = classPriorOf.get(label) * likelihoodOf.get(label);
+            double classPosterior = this.classPriorOf.get(label) * likelihoodOf.get(label);
             classPosteriorOf.put(label, classPosterior);
             evidence += classPosterior;
         }

@@ -15,5 +15,9 @@ module Bae
       internal_classifier.classify(::Java::Bae::Document.new(feature))
     end
 
+    def finish_training!
+      internal_classifier.calculateInitialLikelihoods()
+    end
+
   end
 end
