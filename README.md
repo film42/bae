@@ -75,10 +75,10 @@ classifier.classify({"aaa" => 1, "bbb" => 1})
 #=> {"positive" => 0.8767123287671234, "negative" => 0.12328767123287669}
 
 # Now let's save it to disk
-classifier = ::Bae::Classifier.new
 classifier.save_state("/tmp/some_state.json")
 
 # Let's create a new classifier and load from the sate we just saved
+classifier = ::Bae::Classifier.new
 classifier.load_state("/tmp/some_state.json")
 
 # Now we can classify without retraining
