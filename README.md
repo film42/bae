@@ -3,7 +3,7 @@ Bae
 
 Bae is a multinomial naive bayes classifier based on another gem ["naivebayes"](https://github.com/id774/naivebayes), only this one uses java to do the heavy lifting.
 
-By default this will use a vanilla ruby, but you can require in the native classifier.
+By default this will use the vanilla ruby implementation, but you can use the native classifier written in java.
 
 ```ruby
 require 'bae/native_classifier'
