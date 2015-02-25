@@ -59,6 +59,33 @@ classifier.classify("aaa bbb")
 #=> {"positive"=>0.8962655601659751, "negative"=>0.0663900414937759, "neutral"=>0.037344398340248955}
 ```
 
+### Saving State
+
+You can actually save a snapshot of the trained classifier to disk and load it into memory.
+
+```ruby
+# From the example above...
+classifier = ::Bae::Classifier.new
+classifier.train("positive", {"aaa" => 0, "bbb" => 1})
+classifier.train("negative", {"ccc" => 2, "ddd" => 3})
+
+classifier.finish_training!
+
+classifier.classify({"aaa" => 1, "bbb" => 1})
+#=> {"positive" => 0.8767123287671234, "negative" => 0.12328767123287669}
+
+# Now let's save it to disk
+classifier.save_state("/tmp/some_state.json")
+
+# Let's create a new classifier and load from the sate we just saved
+classifier = ::Bae::Classifier.new
+classifier.load_state("/tmp/some_state.json")
+
+# Now we can classify without retraining
+classifier.classify({"aaa" => 1, "bbb" => 1})
+#=> {"positive" => 0.8767123287671234, "negative" => 0.12328767123287669}
+```
+
 
 ## Contributing
 
