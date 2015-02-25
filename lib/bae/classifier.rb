@@ -86,7 +86,38 @@ module Bae
       normalize(posterior)
     end
 
-    private
+    def save_state(path)
+      state = {}
+      state['frequency_table'] = frequency_table
+      state['label_instance_count'] = label_instance_count
+      state['label_index'] = label_index
+      state['label_index_sequence'] = label_index_sequence
+      state['total_terms'] = total_terms
+
+      ::File.open(::File.expand_path(path), 'w') do |handle|
+        handle.write(state.to_json)
+      end
+    end
+
+    def load_state(path)
+      state = ::JSON.parse(::File.read(::File.expand_path(path)))
+
+      fail 'Missing frequency_table' unless state['frequency_table']
+      fail 'Missing label_instance_count' unless state['label_instance_count']
+      fail 'Missing label_index' unless state['label_index']
+      fail 'Missing label_index_sequence' unless state['label_index_sequence']
+      fail 'Missing total_terms' unless state['total_terms']
+
+      @frequency_table = state['frequency_table']
+      @label_instance_count = state['label_instance_count']
+      @label_index = state['label_index']
+      @label_index_sequence = state['label_index_sequence']
+      @total_terms = state['total_terms']
+
+      finish_training!
+    end
+
+  private
 
     def calculate_likelihoods!
       @likelihoods = label_index.inject({}) do |accumulator, (label, index)|
