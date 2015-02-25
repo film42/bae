@@ -3,6 +3,15 @@ Bae
 
 Bae is a multinomial naive bayes classifier based on another gem ["naivebayes"](https://github.com/id774/naivebayes), only this one uses java to do the heavy lifting.
 
+By default this will use the vanilla ruby implementation, but you can use the native classifier written in java.
+
+```ruby
+require 'bae/native_classifier'
+
+classifier = ::Bae::NativeClassifier.new
+```
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -53,7 +62,7 @@ classifier.classify("aaa bbb")
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/bae/fork )
+1. Fork it ( https://github.com/film42/bae/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
