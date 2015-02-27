@@ -5,7 +5,7 @@ module Bae
       :label_instance_count, :total_terms
 
     def initialize
-      @frequency_table = ::Hash.new { |hash, feature| hash[feature] = [] }
+      @frequency_table = ::Hash.new
       @label_instance_count = ::Hash.new { |hash, label| hash[label] = 0 }
       @label_index = ::Hash.new { |hash, label| hash[label] = 0 }
       @label_index_sequence = -1 # start at -1 so 0 is first value
@@ -74,7 +74,7 @@ module Bae
         words.map do |word|
           row = frequency_table[word]
 
-          unless row.empty?
+          unless row.nil?
             laplace_word_likelihood = (row[index] + 1.0).to_f / (label_instance_count[label] + vocab_size).to_f
             likelihoods[label] *= laplace_word_likelihood / (1.0 - laplace_word_likelihood)
           end
@@ -169,11 +169,11 @@ module Bae
       row = frequency_table[word]
       index = label_index[label]
 
-      if row[index]
+      if row
         row[index] += frequency
       else
-        row[0..1] = label_index.keys.map { |label| 0 }
-        row[index] = frequency
+        frequency_table[word] = label_index.keys.map { |label| 0 }
+        frequency_table[word][index] += frequency
       end
     end
   end
