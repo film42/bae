@@ -12,7 +12,6 @@ Gem::Specification.new do |spec|
   spec.description   = "Multinomial naive bayes classifier with a kick of java"
   spec.homepage      = "https://github.com/film42/bae"
   spec.license       = "GPL version 3, or LGPL version 3 (Dual License)"
-  spec.platform      = 'java'
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
