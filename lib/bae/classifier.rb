@@ -87,20 +87,13 @@ module Bae
     end
 
     def save_state(path)
-      state = {}
-      state['frequency_table'] = frequency_table
-      state['label_instance_count'] = label_instance_count
-      state['label_index'] = label_index
-      state['label_index_sequence'] = label_index_sequence
-      state['total_terms'] = total_terms
-
       ::File.open(::File.expand_path(path), 'w') do |handle|
-        handle.write(state.to_json)
+        handle.write(to_json)
       end
     end
 
-    def load_state(path)
-      state = ::JSON.parse(::File.read(::File.expand_path(path)))
+    def load_from_json(json)
+      state = ::JSON.parse(json)
 
       fail 'Missing frequency_table' unless state['frequency_table']
       fail 'Missing label_instance_count' unless state['label_instance_count']
@@ -115,6 +108,21 @@ module Bae
       @total_terms = state['total_terms']
 
       finish_training!
+    end
+
+    def load_state(path)
+      state_json = ::File.read(::File.expand_path(path))
+      load_from_json(state_json)
+    end
+
+    def to_json
+      state = {}
+      state['frequency_table'] = frequency_table
+      state['label_instance_count'] = label_instance_count
+      state['label_index'] = label_index
+      state['label_index_sequence'] = label_index_sequence
+      state['total_terms'] = total_terms
+      state.to_json
     end
 
   private
