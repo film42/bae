@@ -47,6 +47,15 @@ describe ::Bae::Classifier do
     expect{ subject.classify(1337) }.to raise_error 'Training data must either be a string or hash'
   end
 
+  it "can dump the classifier as json" do
+    subject.train("positive", {"aaa" => 0, "bbb" => 1})
+    subject.train("negative", {"ccc" => 2, "ddd" => 3})
+
+    subject.finish_training!
+
+    expect(subject.to_json).to eq(state_json)
+  end
+
   it "can save the classifier state" do
     subject.train("positive", {"aaa" => 0, "bbb" => 1})
     subject.train("negative", {"ccc" => 2, "ddd" => 3})
@@ -63,7 +72,16 @@ describe ::Bae::Classifier do
     temp_file.unlink
   end
 
-  it "can correctly load a classifier state and correctly classify" do
+  it "can correctly load a classifier state from json and correctly classify" do
+    subject.load_from_json(state_json)
+
+    results = subject.classify({"aaa" => 1, "bbb" => 1})
+
+    expect(results["positive"]).to be_within(0.001).of(0.94117)
+    expect(results["negative"]).to be_within(0.001).of(0.05882)
+  end
+
+  it "can correctly load a classifier state from a file and correctly classify" do
     temp_file = ::Tempfile.new('some_state')
     temp_file.write(state_json)
     temp_file.rewind
