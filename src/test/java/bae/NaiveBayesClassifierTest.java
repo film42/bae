@@ -18,6 +18,7 @@ public class NaiveBayesClassifierTest {
         n.train("negative", new Document("ccc ccc ddd ddd ddd"));
         n.train("positive", new Document("aaa bbb bbb"));
         n.train("negative", new Document("ccc ccc ccc ddd ddd ddd ddd"));
+        n.calculateInitialLikelihoods();
 
         assertEquals(1, n.getFrequencyTable().get("positive", "aaa"));
         assertEquals(3, n.getFrequencyTable().get("positive", "bbb"));
@@ -33,6 +34,7 @@ public class NaiveBayesClassifierTest {
         n.train("negative", new Document("ccc ccc ddd ddd ddd"));
         n.train("positive", new Document("aaa bbb bbb"));
         n.train("negative", new Document("ccc ccc ccc ddd ddd ddd ddd"));
+        n.calculateInitialLikelihoods();
 
         assertEquals(1, (long)n.getWordTable().get("aaa"));
         assertEquals(1, (long)n.getWordTable().get("bbb"));
@@ -49,6 +51,7 @@ public class NaiveBayesClassifierTest {
         n.train("positive", new Document("aaa bbb bbb"));
         n.train("negative", new Document("ccc ccc ccc ddd ddd ddd ddd"));
         n.train("negative", new Document("ccc ccc ccc ddd ddd"));
+        n.calculateInitialLikelihoods();
 
         assertEquals(2, (long)n.getInstanceCount().get("positive"));
         assertEquals(3, (long)n.getInstanceCount().get("negative"));
@@ -64,6 +67,7 @@ public class NaiveBayesClassifierTest {
 
         n.train("positive", d);
         n.train("negative", new Document("ccc ccc ddd ddd ddd"));
+        n.calculateInitialLikelihoods();
 
         Map<String, Double> results = n.classify(new Document("aaa bbb"));
 
@@ -80,6 +84,7 @@ public class NaiveBayesClassifierTest {
 
         n.train("positive", d);
         n.train("negative", new Document("ccc ccc ddd ddd ddd"));
+        n.calculateInitialLikelihoods();
 
         Map<String, Double> results = n.classify(new Document("ccc ccc ccc ddd ddd ddd"));
 
@@ -90,10 +95,10 @@ public class NaiveBayesClassifierTest {
     @Test
     public void canCorrectlyClassifyPositiveWithThreeLabels() {
         NaiveBayesClassifier n = new NaiveBayesClassifier();
-
         n.train("positive", new Document("aaa aaa bbb"));
         n.train("negative", new Document("ccc ccc ddd ddd"));
         n.train("neutral", new Document("eee eee eee fff fff fff"));
+        n.calculateInitialLikelihoods();
 
         Map<String, Double> results = n.classify(new Document("aaa bbb"));
 
@@ -109,6 +114,7 @@ public class NaiveBayesClassifierTest {
         n.train("positive", new Document("aaa aaa bbb"));
         n.train("negative", new Document("ccc ccc ddd ddd"));
         n.train("neutral", new Document("eee eee eee fff fff fff"));
+        n.calculateInitialLikelihoods();
 
         Map<String, Double> results = n.classify(new Document("ccc ccc ccc ddd ddd"));
 
@@ -124,6 +130,7 @@ public class NaiveBayesClassifierTest {
         n.train("positive", new Document("aaa aaa bbb"));
         n.train("negative", new Document("ccc ccc ddd ddd"));
         n.train("neutral", new Document("eee eee eee fff fff fff"));
+        n.calculateInitialLikelihoods();
 
         Map<String, Double> results = n.classify(new Document("aaa ddd ddd eee eee eee fff"));
 

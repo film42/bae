@@ -1,18 +1,43 @@
-<project>
+<project name="bae">
+  <path id="classpath.test">
+    <pathelement location="vendor/junit-4.12.jar"/>
+    <pathelement location="vendor/hamcrest-core-1.3.jar"/>
+    <pathelement location="out/classes/"/>
+  </path>
 
-    <target name="clean">
-        <delete dir="out/classes"/>
-    </target>
+  <target name="clean">
+    <delete dir="out/classes"/>
+  </target>
 
-    <target name="compile" depends="clean">
-        <mkdir dir="out"/>
-        <mkdir dir="out/classes"/>
-        <javac srcdir="src/main/java" destdir="out/classes" source="1.7" target="1.7" includeantruntime="false" />
-    </target>
+  <target name="compile" depends="clean">
+    <mkdir dir="out"/>
+    <mkdir dir="out/classes"/>
+    <javac srcdir="src/main/java" destdir="out/classes" source="1.7" target="1.7" includeantruntime="false" debug="on"  />
+  </target>
 
-    <target name="jar" depends="compile">
-        <mkdir dir="target"/>
-        <jar destfile="target/bae.jar" basedir="out/classes" excludes="**/*.jar,**/MANIFEST.MF,**/BCKEY.*" />
-    </target>
+  <target name="jar" depends="compile">
+    <mkdir dir="target"/>
+    <jar destfile="target/bae.jar" basedir="out/classes" excludes="**/*.jar,**/MANIFEST.MF,**/BCKEY.*" />
+  </target>
 
+  <target name="test" depends="compile">
+    <mkdir dir="out"/>
+    <mkdir dir="out/test/"/>
+    <mkdir dir="out/test/classes"/>
+    <javac srcdir="src/test/java" debug="on" destdir="out/test/classes" includeantruntime="false">
+      <classpath refid="classpath.test"/>
+    </javac>
+
+    <junit printsummary="on" haltonfailure="yes" fork="true">
+      <classpath>
+        <path refid="classpath.test"/>
+        <pathelement location="out/test/classes"/>
+        <pathelement location="out/classes"/>
+      </classpath>
+      <formatter type="brief" usefile="false" />
+      <batchtest>
+        <fileset dir="src/test/java" includes="**/*Test.java" />
+      </batchtest>
+    </junit>
+  </target>
 </project>
