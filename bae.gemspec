@@ -13,7 +13,9 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/film42/bae"
   spec.license       = "GPL version 3, or LGPL version 3 (Dual License)"
 
-  spec.files         = `git ls-files -z`.split("\x0")
+  gem_files          = `git ls-files -z`.split("\x0")
+  gem_ignored_files  = `git ls-files -i -X .gemignore -z`.split("\x0")
+  spec.files         = gem_files - gem_ignored_files
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
