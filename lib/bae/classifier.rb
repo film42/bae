@@ -13,6 +13,8 @@ module Bae
     end
 
     def finish_training!
+      @frequency_table_size = @frequency_table.keys.size
+
       calculate_likelihoods!
       calculate_priors!
     end
@@ -68,7 +70,7 @@ module Bae
       likelihoods = @likelihoods.dup
       posterior = {}
 
-      vocab_size = frequency_table.keys.size
+      vocab_size = @frequency_table_size
 
       label_index.each do |label, index|
         words.map do |word|
@@ -130,7 +132,7 @@ module Bae
     def calculate_likelihoods!
       @likelihoods = label_index.inject({}) do |accumulator, (label, index)|
         initial_likelihood = 1.0
-        vocab_size = frequency_table.keys.size
+        vocab_size = @frequency_table_size
 
         frequency_table.each do |feature, row|
           laplace_word_likelihood = (row[index] + 1.0).to_f / (label_instance_count[label] + vocab_size).to_f
